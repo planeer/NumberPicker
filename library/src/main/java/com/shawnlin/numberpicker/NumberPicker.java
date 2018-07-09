@@ -5,6 +5,7 @@ import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Paint.Align;
+import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
@@ -16,7 +17,9 @@ import android.support.annotation.IntDef;
 import android.support.annotation.StringRes;
 import android.support.v4.content.ContextCompat;
 import android.text.InputType;
+import android.text.Layout;
 import android.text.Spanned;
+import android.text.StaticLayout;
 import android.text.TextUtils;
 import android.text.method.NumberKeyListener;
 import android.util.AttributeSet;
@@ -820,7 +823,7 @@ public class NumberPicker extends LinearLayout {
         switch (action) {
             case MotionEvent.ACTION_DOWN: {
                 removeAllCallbacks();
-                mSelectedText.setVisibility(View.INVISIBLE);
+                // mSelectedText.setVisibility(View.INVISIBLE);
                 if (isHorizontalMode()) {
                     mLastDownOrMoveEventX = mLastDownEventX = event.getX();
                     // Make sure we support flinging inside scrollables.
@@ -1493,6 +1496,8 @@ public class NumberPicker extends LinearLayout {
         // save canvas
         canvas.save();
 
+        int height = 32;
+
         float x, y;
         if (isHorizontalMode()) {
             x = mCurrentScrollOffset;
@@ -1530,7 +1535,36 @@ public class NumberPicker extends LinearLayout {
                 if (isHorizontalMode()) {
                     canvas.drawText(scrollSelectorValue, x, y, mSelectorWheelPaint);
                 } else {
-                    canvas.drawText(scrollSelectorValue, x, y + getPaintCenterY(mSelectorWheelPaint.getFontMetrics()), mSelectorWheelPaint);
+                    Rect bounds = new Rect();
+                    Paint textPaint = mSelectedText.getPaint();
+                    textPaint.getTextBounds(scrollSelectorValue, 0, scrollSelectorValue.length(), bounds);
+                    int text_width = bounds.width();
+                    int text_height = bounds.height();
+                    height = text_height;
+
+                    if(text_width <= getMeasuredWidth())
+                        canvas.drawText(scrollSelectorValue, x, y + getPaintCenterY(mSelectorWheelPaint.getFontMetrics()), mSelectorWheelPaint);
+                    else
+                    {
+                        float percentage = (float) text_width / getMeasuredWidth();
+                        if(percentage < 2.0)
+                        {
+                            int num_letters_second_row = (int) ((percentage - 1) * scrollSelectorValue.length());
+
+                            String first_row = scrollSelectorValue.substring(0, scrollSelectorValue.length() - num_letters_second_row);
+                            String second_row = scrollSelectorValue.substring(scrollSelectorValue.length() - num_letters_second_row);
+                            canvas.drawText(first_row, x, y + getPaintCenterY(mSelectorWheelPaint.getFontMetrics()), mSelectorWheelPaint);
+                            canvas.drawText(second_row, x, y + getPaintCenterY(mSelectorWheelPaint.getFontMetrics()) + text_height + 10, mSelectorWheelPaint);
+                        }
+                        else {
+                            int num_letters_per_row = (int) ((1 / percentage) * scrollSelectorValue.length());
+
+                            String first_row = scrollSelectorValue.substring(0, num_letters_per_row);
+                            String second_row = scrollSelectorValue.substring(num_letters_per_row, num_letters_per_row*2);
+                            canvas.drawText(first_row, x, y + getPaintCenterY(mSelectorWheelPaint.getFontMetrics()), mSelectorWheelPaint);
+                            canvas.drawText(second_row, x, y + getPaintCenterY(mSelectorWheelPaint.getFontMetrics()) + text_height + 10, mSelectorWheelPaint);
+                        }
+                    }
                 }
             }
 
@@ -1560,13 +1594,13 @@ public class NumberPicker extends LinearLayout {
                 mSelectionDivider.draw(canvas);
             } else {
                 // draw the top divider
-                int topOfTopDivider = mTopSelectionDividerTop;
+                int topOfTopDivider = mTopSelectionDividerTop - height / 2;
                 int bottomOfTopDivider = topOfTopDivider + mSelectionDividerThickness;
                 mSelectionDivider.setBounds(0, topOfTopDivider, getRight(), bottomOfTopDivider);
                 mSelectionDivider.draw(canvas);
 
                 // draw the bottom divider
-                int bottomOfBottomDivider = mBottomSelectionDividerBottom;
+                int bottomOfBottomDivider = mBottomSelectionDividerBottom + height / 2;
                 int topOfBottomDivider = bottomOfBottomDivider - mSelectionDividerThickness;
                 mSelectionDivider.setBounds(0, topOfBottomDivider, getRight(), bottomOfBottomDivider);
                 mSelectionDivider.draw(canvas);

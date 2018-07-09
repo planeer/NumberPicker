@@ -1,11 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<merge xmlns:android="http://schemas.android.com/apk/res/android">
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <EditText
         android:id="@+id/np__numberpicker_input"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@null"
         android:gravity="center"
-        android:hint="@null"
-        android:singleLine="true" />
+        android:inputType="textMultiLine"
+        android:lines="2"
+        android:maxLines="2"
+        android:minLines="2"
+        android:scrollbars="vertical"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Body1"/>
 </merge>

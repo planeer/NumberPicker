@@ -1540,7 +1540,7 @@ public class NumberPicker extends LinearLayout {
                     textPaint.getTextBounds(scrollSelectorValue, 0, scrollSelectorValue.length(), bounds);
                     int text_width = bounds.width();
                     int text_height = bounds.height();
-                    height = text_height;
+                    // height = text_height;
 
                     if(text_width <= getMeasuredWidth())
                         canvas.drawText(scrollSelectorValue, x, y + getPaintCenterY(mSelectorWheelPaint.getFontMetrics()), mSelectorWheelPaint);
@@ -1553,16 +1553,16 @@ public class NumberPicker extends LinearLayout {
 
                             String first_row = scrollSelectorValue.substring(0, scrollSelectorValue.length() - num_letters_second_row);
                             String second_row = scrollSelectorValue.substring(scrollSelectorValue.length() - num_letters_second_row);
-                            canvas.drawText(first_row, x, y + getPaintCenterY(mSelectorWheelPaint.getFontMetrics()), mSelectorWheelPaint);
-                            canvas.drawText(second_row, x, y + getPaintCenterY(mSelectorWheelPaint.getFontMetrics()) + text_height + 10, mSelectorWheelPaint);
+                            canvas.drawText(first_row, x, y + getPaintCenterY(mSelectorWheelPaint.getFontMetrics()) - 20, mSelectorWheelPaint);
+                            canvas.drawText(second_row, x, y + getPaintCenterY(mSelectorWheelPaint.getFontMetrics()) + text_height, mSelectorWheelPaint);
                         }
                         else {
                             int num_letters_per_row = (int) ((1 / percentage) * scrollSelectorValue.length());
 
                             String first_row = scrollSelectorValue.substring(0, num_letters_per_row);
                             String second_row = scrollSelectorValue.substring(num_letters_per_row, num_letters_per_row*2);
-                            canvas.drawText(first_row, x, y + getPaintCenterY(mSelectorWheelPaint.getFontMetrics()), mSelectorWheelPaint);
-                            canvas.drawText(second_row, x, y + getPaintCenterY(mSelectorWheelPaint.getFontMetrics()) + text_height + 10, mSelectorWheelPaint);
+                            canvas.drawText(first_row, x, y + getPaintCenterY(mSelectorWheelPaint.getFontMetrics()) - 20, mSelectorWheelPaint);
+                            canvas.drawText(second_row, x, y + getPaintCenterY(mSelectorWheelPaint.getFontMetrics()) + text_height, mSelectorWheelPaint);
                         }
                     }
                 }

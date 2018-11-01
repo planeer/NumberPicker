@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.shawnlin.numberpicker;
+package projektarna.projekt.student.Modules.Login;
 
 import android.content.Context;
 import android.hardware.SensorManager;
@@ -30,7 +30,8 @@ import android.view.animation.Interpolator;
  * automatically moved to its final stage and computeScrollOffset()
  * will always return false to indicate that scrolling is over.
  */
-public class Scroller  {
+public class Scroller
+{
     private int mMode;
 
     private int mStartX;
@@ -421,10 +422,10 @@ public class Scroller  {
     {
         x *= sViscousFluidScale;
         if (x < 1.0f) {
-            x -= (1.0f - (float)Math.exp(-x));
+            x -= (1.0f - (float) Math.exp(-x));
         } else {
             float start = 0.36787944117f;   // 1/e == exp(-1)
-            x = 1.0f - (float)Math.exp(1.0f - x);
+            x = 1.0f - (float) Math.exp(1.0f - x);
             x = start + x * (1.0f - start);
         }
         x *= sViscousFluidNormalize;

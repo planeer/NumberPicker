@@ -1,4 +1,4 @@
-package com.shawnlin.numberpicker;
+package projektarna.projekt.student.Modules.Login;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -17,9 +17,7 @@ import android.support.annotation.IntDef;
 import android.support.annotation.StringRes;
 import android.support.v4.content.ContextCompat;
 import android.text.InputType;
-import android.text.Layout;
 import android.text.Spanned;
-import android.text.StaticLayout;
 import android.text.TextUtils;
 import android.text.method.NumberKeyListener;
 import android.util.AttributeSet;
@@ -42,12 +40,15 @@ import java.lang.annotation.Retention;
 import java.text.DecimalFormatSymbols;
 import java.util.Locale;
 
+import projektarna.projekt.student.R;
+
 import static java.lang.annotation.RetentionPolicy.SOURCE;
 
 /**
  * A widget that enables the user to select a number form a predefined range.
  */
-public class NumberPicker extends LinearLayout {
+public class NumberPicker extends LinearLayout
+{
 
     @Retention(SOURCE)
     @IntDef({VERTICAL, HORIZONTAL})
@@ -612,7 +613,7 @@ public class NumberPicker extends LinearLayout {
 
         TypedArray attributesArray = context.obtainStyledAttributes(attrs, R.styleable.NumberPicker, defStyle, 0);
 
-        mSelectionDivider = ContextCompat.getDrawable(context, R.drawable.np_numberpicker_selection_divider);
+        // mSelectionDivider = ContextCompat.getDrawable(context, R.drawable.np_numberpicker_selection_divider);
 
         mSelectionDividerColor = attributesArray.getColor(R.styleable.NumberPicker_np_dividerColor, mSelectionDividerColor);
 
@@ -823,7 +824,7 @@ public class NumberPicker extends LinearLayout {
         switch (action) {
             case MotionEvent.ACTION_DOWN: {
                 removeAllCallbacks();
-                // mSelectedText.setVisibility(View.INVISIBLE);
+                mSelectedText.setVisibility(View.INVISIBLE);
                 if (isHorizontalMode()) {
                     mLastDownOrMoveEventX = mLastDownEventX = event.getX();
                     // Make sure we support flinging inside scrollables.
@@ -1549,10 +1550,16 @@ public class NumberPicker extends LinearLayout {
                         float percentage = (float) text_width / getMeasuredWidth();
                         if(percentage < 2.0)
                         {
-                            int num_letters_second_row = (int) ((percentage - 1) * scrollSelectorValue.length());
+                            int num_letters_first_row = (int) ((1 / percentage) * scrollSelectorValue.length());
 
-                            String first_row = scrollSelectorValue.substring(0, scrollSelectorValue.length() - num_letters_second_row);
-                            String second_row = scrollSelectorValue.substring(scrollSelectorValue.length() - num_letters_second_row);
+                            String first_row = scrollSelectorValue.substring(0, num_letters_first_row);
+                            int last_space_first_row = first_row.lastIndexOf(" ");
+                            String second_row = scrollSelectorValue.substring(num_letters_first_row);
+                            if (last_space_first_row != -1 || scrollSelectorValue.charAt(num_letters_first_row + 1) != ' ')
+                            {
+                                first_row = scrollSelectorValue.substring(0, last_space_first_row);
+                                second_row = scrollSelectorValue.substring(last_space_first_row + 1);
+                            }
                             canvas.drawText(first_row, x, y + getPaintCenterY(mSelectorWheelPaint.getFontMetrics()) - 20, mSelectorWheelPaint);
                             canvas.drawText(second_row, x, y + getPaintCenterY(mSelectorWheelPaint.getFontMetrics()) + text_height, mSelectorWheelPaint);
                         }
@@ -1560,7 +1567,15 @@ public class NumberPicker extends LinearLayout {
                             int num_letters_per_row = (int) ((1 / percentage) * scrollSelectorValue.length());
 
                             String first_row = scrollSelectorValue.substring(0, num_letters_per_row);
+
+                            int last_space_first_row = first_row.lastIndexOf(" ");
                             String second_row = scrollSelectorValue.substring(num_letters_per_row, num_letters_per_row*2);
+                            if (last_space_first_row != -1)
+                            {
+                                first_row = scrollSelectorValue.substring(0, last_space_first_row);
+                                second_row = scrollSelectorValue.substring(last_space_first_row + 1, num_letters_per_row*2);
+                            }
+
                             canvas.drawText(first_row, x, y + getPaintCenterY(mSelectorWheelPaint.getFontMetrics()) - 20, mSelectorWheelPaint);
                             canvas.drawText(second_row, x, y + getPaintCenterY(mSelectorWheelPaint.getFontMetrics()) + text_height, mSelectorWheelPaint);
                         }
@@ -1825,7 +1840,7 @@ public class NumberPicker extends LinearLayout {
     /**
      * Handles transition to a given <code>scrollState</code>
      */
-    private void onScrollStateChange(int scrollState) {
+    public void onScrollStateChange(int scrollState) {
         if (mScrollState == scrollState) {
             return;
         }
@@ -2070,7 +2085,8 @@ public class NumberPicker extends LinearLayout {
      * Filter for accepting only valid indices or prefixes of the string
      * representation of valid indices.
      */
-    class InputTextFilter extends NumberKeyListener {
+    class InputTextFilter extends NumberKeyListener
+    {
 
         // XXX This doesn't allow for range limits when controlled by a soft input method!
         public int getInputType() {
@@ -2157,7 +2173,8 @@ public class NumberPicker extends LinearLayout {
     /**
      * Command for setting the input text selection.
      */
-    class SetSelectionCommand implements Runnable {
+    class SetSelectionCommand implements Runnable
+    {
         private int mSelectionStart;
 
         private int mSelectionEnd;
@@ -2170,7 +2187,8 @@ public class NumberPicker extends LinearLayout {
     /**
      * Command for changing the current value from a long press by one.
      */
-    class ChangeCurrentByOneFromLongPressCommand implements Runnable {
+    class ChangeCurrentByOneFromLongPressCommand implements Runnable
+    {
         private boolean mIncrement;
 
         private void setStep(boolean increment) {
